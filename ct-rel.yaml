@@ -1,0 +1,8 @@
+# See https://github.com/helm/chart-testing#configuration
+remote: origin
+chart-dirs:
+  - charts
+chart-repos:
+  - dgraph=https://charts.dgraph.io
+helm-extra-args: --timeout 200s
+check-version-increment: true

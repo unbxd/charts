@@ -39,7 +39,7 @@
 
 {{- end }}
 
-   NOTE: Change "http://" to "https://" if TLS was added to the Ingress, Load Balancer, or Dgraph Alpha service.
+   NOTE: Change "http://" to "https://" if TLS/MTLS was added to the Ingress, Load Balancer, or Dgraph Alpha service.
 {{- if (eq .Values.ratel.enabled true) }}
 
 3. Get the Dgraph Ratel UI endpoint by running these commands:
@@ -72,5 +72,5 @@
 
 {{- end }}
 
-   NOTE: Change "http://" to "https://" if TLS was added to the Ingress or Load Balancer.
+   NOTE: Change "http://" to "https://" if TLS/MTLS was added to the Ingress or Load Balancer.
 {{- end }}
