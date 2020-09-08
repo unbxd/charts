@@ -98,7 +98,26 @@ Create a default fully qualified ratel name.
 {{ template "dgraph.fullname" . }}-{{ .Values.ratel.name }}
 {{- end -}}
 
-
-
-
-
+{{- /* Generate comma-separated list of Zeros */}}
+{{- define "multi_zeros" -}}
+  {{- $zeroFullName := include "dgraph.zero.fullname" . -}}
+  {{- $max := int .Values.zero.replicaCount -}}
+  {{- /* Create semverCompare() safe version if 'master' or 'latest' */ -}}
+  {{- $safeVersion := .Values.image.tag -}}
+  {{- if (eq $safeVersion "shuri") -}}
+    {{- $safeVersion = "20.07.0" -}}
+  {{- else if  (regexMatch "^[^v].*" $safeVersion) -}}
+    {{- $safeVersion = "v50.0.0" -}}
+  {{- end -}}
+  {{- /* Reset $max to 1 if multiple zeros not supported by dgraph version */}}
+  {{- if semverCompare "< 1.2.3 || 20.03.0" $safeVersion -}}
+     {{- $max = 1 -}}
+  {{- end -}}
+  {{- /* Create comma-separated list of zeros */}}
+  {{- range $idx := until $max }}
+    {{- printf "%s-%d.%s-headless.${POD_NAMESPACE}.svc.cluster.local:5080" $zeroFullName $idx $zeroFullName -}}
+    {{- if ne $idx (sub $max 1) -}}
+      {{- print "," -}}
+    {{- end -}}
+  {{ end }}
+{{- end -}}

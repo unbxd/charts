@@ -12,7 +12,7 @@ const (
 	Tag = "v20.07.0"
 )
 
-func TestPodTemplateRendersContainerImage(t *testing.T) {
+func TestRender(t *testing.T) {
 	// Path to the helm chart we will test
 	helmChartPath := "../charts/dgraph"
 

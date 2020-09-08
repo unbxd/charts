@@ -57,7 +57,7 @@ Lint() {
 }
 
 SetupKind() {
-	if [ -f $SCRIPT_DIR/testdir/chart-changed ]; then
+	if [[ -f $SCRIPT_DIR/testdir/chart-changed || ! -z "$1" ]]; then
 		INPUT_INSTALL_LOCAL_PATH_PROVISIONER=1 bash $SCRIPT_DIR/testdir/$KIND_REPO/main.sh
 	fi
 }
@@ -80,8 +80,8 @@ if [ -z "$1" ]; then
 	Setup
 	Lint
 	SetupKind
-	InstallTest
+	# InstallTest #included in go tests now
 	GoTests
 else
-	$1
+	$1 1
 fi
