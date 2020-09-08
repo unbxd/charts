@@ -54,26 +54,38 @@ func TestDeploys(t *testing.T) {
 
 	// Now that the chart is deployed, verify the deployment. This function will open a tunnel to the Pod and hit the
 	verifyInstance(t, kubectlOptions, fmt.Sprintf("%s-dgraph-alpha-0", releaseName),
-		8080, httpFunc(t, "\"status\":\"healthy\""))
+		"pod", "/health", 8080, httpFunc(t, "\"status\":\"healthy\""))
 	verifyInstance(t, kubectlOptions, fmt.Sprintf("%s-dgraph-zero-0", releaseName),
-		6080, httpFunc(t, "OK"))
+		"pod", "/health", 6080, httpFunc(t, "OK"))
+	verifyInstance(t, kubectlOptions, fmt.Sprintf("%s-dgraph-alpha", releaseName),
+		"svc", "/health", 8080, httpFunc(t, "\"status\":\"healthy\""))
+	verifyInstance(t, kubectlOptions, fmt.Sprintf("%s-dgraph-zero", releaseName),
+		"svc", "/health", 6080, httpFunc(t, "OK"))
+	verifyInstance(t, kubectlOptions, fmt.Sprintf("%s-dgraph-ratel", releaseName),
+		"svc", "", 8000, httpFunc(t, "OK"))
 }
 
 func verifyInstance(t *testing.T, kubectlOptions *k8s.KubectlOptions, podName string,
-	port int, aftercall func(statusCode int, body string) bool) {
+	typ string, url string, port int, aftercall func(statusCode int, body string) bool) {
 	// Wait for the pod to come up. It takes some time for the Pod to start, so retry a few times.
 	retries := 25
 	sleep := 5 * time.Second
-	k8s.WaitUntilPodAvailable(t, kubectlOptions, podName, retries, sleep)
+	rt := k8s.ResourceTypePod
+	switch typ {
+	case "svc":
+		rt = k8s.ResourceTypeService
+		k8s.WaitUntilServiceAvailable(t, kubectlOptions, podName, retries, sleep)
+	default:
+		k8s.WaitUntilPodAvailable(t, kubectlOptions, podName, retries, sleep)
+	}
 
 	// We will first open a tunnel to the pod, making sure to close it at the end of the test.
-	tunnel := k8s.NewTunnel(kubectlOptions, k8s.ResourceTypePod, podName, 0, port)
+	tunnel := k8s.NewTunnel(kubectlOptions, rt, podName, 0, port)
 	defer tunnel.Close()
 	tunnel.ForwardPort(t)
 
-	// ... and now that we have the tunnel, we will verify that we get back a 200 OK with the nginx welcome page.
 	// It takes some time for the Pod to start, so retry a few times.
-	endpoint := fmt.Sprintf("http://%s/health", tunnel.Endpoint())
+	endpoint := fmt.Sprintf("http://%s%s", tunnel.Endpoint(), url)
 	http_helper.HttpGetWithRetryWithCustomValidation(
 		t,
 		endpoint,
