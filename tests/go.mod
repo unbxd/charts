@@ -1,6 +1,6 @@
-module github.com/gruntwork-io/terratest-helm-testing-example/test
+module github.com/dgraph-io/charts/tests
 
-go 1.13
+go 1.14
 
 require (
 	github.com/gruntwork-io/terratest v0.25.1

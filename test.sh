@@ -68,7 +68,6 @@ InstallTest() {
 
 GoTests() {
 	pushd $SCRIPT_DIR/tests > /dev/null
-	echo $PATH
 		go test -v .
 	popd > /dev/null
 }
