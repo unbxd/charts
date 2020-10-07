@@ -346,7 +346,10 @@ alpha:
   ## * bulk loader (ref. https://dgraph.io/docs/deploy/fast-data-loading/#bulk-loader)
   initContainers:
     enabled: false
+    ## generic initContainer
+    ## this is a generic initContainer that can be used to run manual steps
     generic:
+      enabled: false
       image:
         << : *image
       command:
@@ -356,6 +359,41 @@ alpha:
           trap "exit" SIGINT SIGTERM
           echo "Write to /dgraph/doneinit when ready."
           until [ -f /dgraph/doneinit ]; do sleep 2; done
+    ## restore initContainer
+    ## this initContainer has automation to run a restore process automatically
+    restore:
+      enabled: false
+      debug: false
+      command:
+        - bash
+        - "-c"
+        - |
+          trap "exit" SIGINT SIGTERM
+          echo '>>>>>>>> TO BE ADDED <<<<<<<<<'
+      settings:
+        ## Directory where posting lists are stored (required)
+        postings: /dgraph/restore/postings
+        ## The file that stores the symmetric key used in backup
+        encryption:
+          file: ""
+        ## Sets the source location URI (required).
+        ## examples:
+        ##   /dgraph/backups
+        ##   s3://s3.us-west-2.amazonaws.com/<bucketname>
+        ##   minio://my-release-minio.default.svc:9000/<bucketname>    
+        location: &restore_path /dgraph/backups
+        ## specify access keys required by MinIO or S3
+        keys:
+          minio:
+            ## MINIO_ACCESS_KEY env var
+            access: ""
+            ## MINIO_SECRET_KEY env var
+            secret: ""
+          s3:
+            ## AWS_ACCESS_KEY_ID env var
+            access: ""
+            ## AWS_SECRET_ACCESS_KEY env var
+            secret: ""   
 
 ratel:
   name: ratel
