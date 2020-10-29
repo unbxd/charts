@@ -100,7 +100,7 @@ Return empty string if s3 keys are not defined
 {{- end -}}
 
 {{/*
-Return the initContainers image name
+Return the generic initContainers image name
 */}}
 {{- define "dgraph.initContainers.generic.image" -}}
 {{- $registryName := .Values.alpha.initContainers.generic.image.registry -}}
@@ -108,6 +108,17 @@ Return the initContainers image name
 {{- $tag := .Values.alpha.initContainers.generic.image.tag | toString -}}
 {{- printf "%s/%s:%s" $registryName $repositoryName $tag -}}
 {{- end -}}
+
+{{/*
+Return the restore initContainers image name
+*/}}
+{{- define "dgraph.initContainers.restore.image" -}}
+{{- $registryName := .Values.alpha.initContainers.restore.image.registry -}}
+{{- $repositoryName := .Values.alpha.initContainers.restore.image.repository -}}
+{{- $tag := .Values.alpha.initContainers.restore.image.tag | toString -}}
+{{- printf "%s/%s:%s" $registryName $repositoryName $tag -}}
+{{- end -}}
+
 
 {{/*
 Return the proper image name (for the metrics image)

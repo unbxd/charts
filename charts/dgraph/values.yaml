@@ -345,7 +345,6 @@ alpha:
   ##   (ref. https://dgraph.io/docs/enterprise-features/binary-backups/#restore-from-backup)
   ## * bulk loader (ref. https://dgraph.io/docs/deploy/fast-data-loading/#bulk-loader)
   initContainers:
-    enabled: false
     ## generic initContainer
     ## this is a generic initContainer that can be used to run manual steps
     generic:
@@ -363,6 +362,8 @@ alpha:
     ## this initContainer has automation to run a restore process automatically
     restore:
       enabled: false
+      image:
+        << : *image
       debug: false
       command:
         - bash
@@ -380,7 +381,7 @@ alpha:
         ## examples:
         ##   /dgraph/backups
         ##   s3://s3.us-west-2.amazonaws.com/<bucketname>
-        ##   minio://my-release-minio.default.svc:9000/<bucketname>    
+        ##   minio://my-release-minio.default.svc:9000/<bucketname>
         location: &restore_path /dgraph/backups
         ## specify access keys required by MinIO or S3
         keys:
@@ -393,7 +394,7 @@ alpha:
             ## AWS_ACCESS_KEY_ID env var
             access: ""
             ## AWS_SECRET_ACCESS_KEY env var
-            secret: ""   
+            secret: ""
 
 ratel:
   name: ratel
