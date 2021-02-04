@@ -1,0 +1,8 @@
+alpha:
+  metrics:
+    enabled: true
+  monitorLabel: alpha-dgraph-io
+zero:
+  metrics:
+    enabled: true
+  monitorLabel: zero-dgraph-io
