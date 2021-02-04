@@ -10,12 +10,15 @@ releases:
   - name: {{ env "RELEASE" | default "my-release" }}
     namespace: {{ env "NAMESPACE" | default "default" }}
     chart: {{ env "PWD" }}/../../charts/dgraph
+    values:
+      - ./examples/dgraph.yaml.gotmpl
 
   - name: {{ env "PROMETHEUS_RELEASE" | default "my-prometheus" }}
     namespace: {{ env "NAMESPACE" | default "monitoring" }}
     chart: prometheus-community/kube-prometheus-stack
     values:
-      - ./examples/dgraph-prometheus-operator.yaml
+      - ./examples/prometheus-operator.yaml.gotmpl
+      - ./examples/grafana-dashboard.yaml
       - grafana:
           adminPassword: {{ env "GRAFANA_ADMIN_PASSWORD" | default "grafana123" }}
     disableValidation: true

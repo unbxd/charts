@@ -1,0 +1,8 @@
+alpha:
+  metrics:
+    enabled: true
+  monitorLabel: {{ env "DGRAPH_ALPHA_MONITOR_LABEL" | default "alpha-dgraph-io" }}
+zero:
+  metrics:
+    enabled: true
+  monitorLabel: {{ env "DGRAPH_ZERO_MONITOR_LABEL" | default "zero-dgraph-io" }} 

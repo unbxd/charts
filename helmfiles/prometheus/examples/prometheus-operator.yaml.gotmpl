@@ -1,6 +1,7 @@
 prometheusOperator:
   createCustomResource: true
 
+## values based on https://github.com/grafana/helm-charts/blob/main/charts/grafana/values.yaml
 grafana:
   enabled: true
   persistence:
@@ -66,13 +67,17 @@ prometheus:
       endpoints:
         - port: http-zero
           path: /debug/prometheus_metrics
+      namespaceSelector:
+        any: true
       selector:
         matchLabels:
-          monitor: zero-dgraph-io
+          monitor: {{ env "DGRAPH_ZERO_MONITOR_LABEL" | default "zero-dgraph-io" }}
     - name: alpha-dgraph-io
       endpoints:
         - port: http-alpha
           path: /debug/prometheus_metrics
+      namespaceSelector:
+        any: true
       selector:
         matchLabels:
-          monitor: alpha-dgraph-io
+          monitor: {{ env "DGRAPH_ALPHA_MONITOR_LABEL" | default "alpha-dgraph-io" }}
