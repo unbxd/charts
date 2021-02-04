@@ -60,6 +60,7 @@ prometheus:
       requests:
         memory: 400Mi
     enableAdminAPI: false
+
   additionalServiceMonitors:
     - name: zero-dgraph-io
       endpoints:
