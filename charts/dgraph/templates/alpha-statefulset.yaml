@@ -34,6 +34,9 @@ spec:
         chart: {{ template "dgraph.chart" . }}
         release: {{ .Release.Name }}
         component: {{ .Values.alpha.name }}
+        {{- range $key, $val := .Values.alpha.additional_labels }}
+        {{ $key }}: {{ $val | quote }}
+        {{- end }}
     spec:
       {{- if or (eq .Values.alpha.antiAffinity "hard") (eq .Values.alpha.antiAffinity "soft") .Values.alpha.nodeAffinity }}
       affinity:
